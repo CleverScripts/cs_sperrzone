@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSPD Sperzonen-Verwaltung</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .menu {
+            background-color: #1a3c6e;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+            max-width: 400px;
+            width: 100%;
+        }
+        .menu h1 {
+            margin-top: 0;
+            border-bottom: 2px solid #ffd700;
+            padding-bottom: 10px;
+        }
+        .button {
+            background-color: #ffd700;
+            color: #1a3c6e;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #ffea00;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff4136;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .close:hover {
+            background-color: #ff1a1a;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+        #sperzoneList {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+        }
+        #sperzoneList li {
+            background-color: #2c5aa0;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #sperzoneList button {
+            background-color: #ff4136;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <button class="close" onclick="closeMenu()">X</button>
+        <h1>LSPD Sperzonen-Verwaltung</h1>
+        <form id="sperzoneForm">
+            <label for="sperzoneName">Name der Sperrzone:</label><br>
+            <input type="text" id="sperzoneName" name="sperzoneName" required><br><br>
+            <label for="sperzoneRadius">Radius der Sperrzone (in Metern):</label><br>
+            <input type="number" id="sperzoneRadius" name="sperzoneRadius" required><br><br>
+            <button type="submit" class="button">Sperrzone hinzufügen</button>
+        </form>
+
+        <h2>Aktive Sperrzonen</h2>
+        <ul id="sperzoneList"></ul>
+    </div>
+
+    <script>
+        window.addEventListener('message', function(event) {
+            if (event.data.action === 'open') {
+                document.body.style.display = 'flex';
+                updateZoneList(event.data.zones);
+                document.getElementById('sperzoneName').value = '';
+                document.getElementById('sperzoneRadius').value = '';
+            }
+        });
+
+        document.getElementById('sperzoneForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            fetch(`https://${GetParentResourceName()}/createSperzone`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    sperzoneName: document.getElementById('sperzoneName').value,
+                    sperzoneRadius: document.getElementById('sperzoneRadius').value
+                })
+            }).then(() => closeMenu());
+        });
+
+        function closeMenu() {
+            fetch(`https://${GetParentResourceName()}/closeMenu`, {
+                method: 'POST'
+            });
+            document.body.style.display = 'none';
+        }
+
+        function updateZoneList(zones) {
+            const list = document.getElementById('sperzoneList');
+            list.innerHTML = '';
+            zones.forEach(zone => {
+                const li = document.createElement('li');
+                li.textContent = `${zone.name} (Radius: ${zone.radius}m)`;
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Löschen';
+                deleteButton.onclick = function() {
+                    fetch(`https://${GetParentResourceName()}/deleteSperzone`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ id: zone.id })
+                    }).then(() => li.remove());
+                };
+                li.appendChild(deleteButton);
+                list.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
