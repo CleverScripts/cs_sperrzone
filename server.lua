@@ -13,7 +13,7 @@ function sendDiscordMessage(webhookUrl, title, message)
         }
     }
 
-    PerformHttpRequest(webhookUrl, function(err, text, headers) end, 'POST', json.encode({username = "Sperzonen Bot", embeds = embeds}), { ['Content-Type'] = 'application/json' })
+    PerformHttpRequest(webhookUrl, function(err, text, headers) end, 'POST', json.encode({username = "Sperrzonen Bot", embeds = embeds}), { ['Content-Type'] = 'application/json' })
 end
 
 -- Funktion zum Senden einer Benachrichtigung an alle Spieler
@@ -55,7 +55,7 @@ AddEventHandler('createSperzone', function(name, radius, x, y, z)
     exports.oxmysql:insert('INSERT INTO sperzonen (name, radius, x, y, z) VALUES (?, ?, ?, ?, ?)', {name, radius, x, y, z}, function(id)
         if id then
             TriggerClientEvent('addZone', -1, {id = id, name = name, radius = radius, x = x, y = y, z = z})
-            notifyAllPlayers('LSPD hat eine Sperzone erichtet: ' .. name)
+            notifyAllPlayers('LSPD hat eine Sperrzone erichtet: ' .. name)
             sendDiscordMessage(Config.DiscordWebhooks.CreateZone, "Neue Sperrzone erstellt", discordMessage)
         else
             TriggerClientEvent('esx:showNotification', _source, 'Fehler beim Erstellen der Sperrzone.')
@@ -93,7 +93,7 @@ AddEventHandler('deleteSperzone', function(id)
             exports.oxmysql:execute('DELETE FROM sperzonen WHERE id = ?', {id}, function(deleteResult)
                 if deleteResult and deleteResult.affectedRows > 0 then
                     TriggerClientEvent('removeZone', -1, id)
-                    notifyAllPlayers('LSPD hat eine Sperzone entfernt: ' .. zoneName)
+                    notifyAllPlayers('LSPD hat eine Sperrzone entfernt: ' .. zoneName)
                     local discordMessage = string.format("Die Sperrzone '%s' wurde von %s entfernt.\n\n**Sperrzone Informationen**\nName: %s\nRadius: %d Meter\nKoordinaten: (%.2f, %.2f, %.2f)\n\n**Player Identifiers**\nDiscord: %s\nFiveM: %s\nLicense: %s\nLicense2: %s", zoneName, playerName, zoneName, zoneRadius, zoneX, zoneY, zoneZ, discord or "N/A", fivem or "N/A", license or "N/A", license2 or "N/A")
                     sendDiscordMessage(Config.DiscordWebhooks.DeleteZone, "Sperrzone entfernt", discordMessage)
                 else
