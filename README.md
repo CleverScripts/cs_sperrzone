@@ -35,9 +35,13 @@ CREATE TABLE IF NOT EXISTS sperzonen (
 - oxmysql oder ähnliche Datenbankressource
 
 ## Support
-Kontaktieren Sie uns über GitHub Issues oder Discord bei Fragen oder Problemen.
+
+Bei Fragen oder Problemen wenden Sie sich bitte an unser Support-Team unter cleverschripts@gmail.com oder über Discord: https://discord.gg/HT9SJXQ9gC.
 
 ## Lizenz
-MIT-Lizenz. Siehe LICENSE-Datei für Details.
+
+Dieses Skript ist urheberrechtlich geschützt und darf nur mit Genehmigung von Clever Scripts verwendet werden. Unerlaubte Verbreitung oder Nutzung ist untersagt.
+
+---
 
 © 2024 Clever Scripts. Alle Rechte vorbehalten.
