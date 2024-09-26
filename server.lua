@@ -21,14 +21,38 @@ function notifyAllPlayers(message)
     TriggerClientEvent('esx:showNotification', -1, message)
 end
 
+--RegisterCommand('sperzone', function(source, args, rawCommand)
+--    local xPlayer = ESX.GetPlayerFromId(source)
+--    if xPlayer and xPlayer.job.name == 'police' then
+--        TriggerClientEvent('openSperzoneMenu', source)
+--    else
+--        TriggerClientEvent('esx:showNotification', source, 'Du hast keine Berechtigung, diesen Befehl zu verwenden.')
+--    end
+--end, false)
+
 RegisterCommand('sperzone', function(source, args, rawCommand)
     local xPlayer = ESX.GetPlayerFromId(source)
-    if xPlayer and xPlayer.job.name == 'police' then
-        TriggerClientEvent('openSperzoneMenu', source)
-    else
-        TriggerClientEvent('esx:showNotification', source, 'Du hast keine Berechtigung, diesen Befehl zu verwenden.')
+    
+    if xPlayer then
+        local playerJob = xPlayer.job.name
+        local isAllowed = false
+
+        -- Überprüfe, ob der Job in der Config.AllowedJobs-Liste enthalten ist
+        for _, job in ipairs(Config.AllowedJobs) do
+            if job == playerJob then
+                isAllowed = true
+                break
+            end
+        end
+
+        if isAllowed then
+            TriggerClientEvent('openSperzoneMenu', source)
+        else
+            TriggerClientEvent('esx:showNotification', source, 'Du hast keine Berechtigung, diesen Befehl zu verwenden.')
+        end
     end
-end, false)
+end)
+
 
 RegisterNetEvent('createSperzone')
 AddEventHandler('createSperzone', function(name, radius, x, y, z)
