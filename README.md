@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS sperzonen (
 6. FiveM-Server neustarten oder Ressource laden
 
 ## Verwendung
-- `/sperzone`: Neue Sperrzone erstellen (nur police)
-- `/sperzone`: Sperzonen verwalten / löschen (nur police)
+- `/sperzone`: Neue Sperrzone erstellen (Config Anpassbar)
+- `/sperzone`: Sperzonen verwalten / löschen (Config Anpassbar)
 
 ## Abhängigkeiten
 - ESX Framework (optional)
